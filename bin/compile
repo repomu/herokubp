@@ -1,0 +1,25 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install Heroku CLI"
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+FILE_NAME="heroku-linux-x64.tar.xz"
+DOWNLOAD_URL="https://cli-assets.heroku.com/"$FILE_NAME
+PREFIX=/usr
+
+echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+
+cd $BUILD_DIR
+mkdir -p $VENDOR_DIR
+cd $VENDOR_DIR
+mkdir -p heroku
+cd heroku
+curl -s $DOWNLOAD_URL | tar xJ --strip-components=1
+echo "exporting PATH" | indent
+PROFILE_PATH="$BUILD_DIR/.profile.d/heroku.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/heroku/bin"' >> $PROFILE_PATH
